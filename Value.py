@@ -36,12 +36,24 @@ class Value:
         other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data ** other.data, (self, other))
         def _backward():
-            self.grad += other.data *(self.data ** (other.data - 1) ) * out.grad
-            other.grad += self.data *(other.data ** (self.data - 1) ) * out.grad 
+            self.grad += other.data * (self.data ** (other.data - 1)) * out.grad
+            other.grad += (self.data ** other.data) * math.log(self.data) * out.grad
 
         out._backward = _backward
         return out
 
+
+    def __radd__(self, other):
+        return self + other
+
+    def __rmul__(self, other):
+        return self * other
+
+    def __rsub__(self, other):
+        return Value(other) - self
+
+    def __rtruediv__(self, other):
+        return Value(other) / self
 
     # These func combined by all func above;
 

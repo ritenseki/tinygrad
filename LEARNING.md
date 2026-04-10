@@ -68,6 +68,10 @@ self.grad += other.data * out.grad
 组合运算（`__neg__`、`__sub__`、`__truediv__`）不需要自己写 `_backward`，
 因为它们复用了已有运算，梯度会自动通过那些运算传播。
 
+`__radd__`、`__rmul__` 等是为了处理 `2 + Value(3)` 这类顺序反过来的情况。
+Python 在 `int.__add__(Value)` 失败时会自动尝试 `Value.__radd__(int)`。
+实现上直接复用正向运算即可，不需要额外的 `_backward`。
+
 ---
 
 ### backward() 的工作方式
@@ -97,9 +101,9 @@ def backward(self):
 
 ---
 
-## 下一阶段：神经网络模块
+---
 
-- [ ] `Neuron`：单个神经元
-- [ ] `Layer`：全连接层
-- [ ] `MLP`：多层感知机
-- [ ] 训练循环
+## 项目完成
+
+autograd 引擎核心功能已全部实现。
+下一步可以尝试 karpathy/nanoGPT，从零实现 GPT。
